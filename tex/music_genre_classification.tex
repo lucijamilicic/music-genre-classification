@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[serbian]{babel}
+
+\title{Klasifikacija muzičkih žanrova}
+\author{Lucija Miličić \and Natalija Asanović}
+\date{Avgust 2022.}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\section{Uvod}
+
+Oznake muzičkih žanrova su korisne za organizovanje pesama, albuma i izvođača u šire grupe koje dele slične muzičke karakteristike. Kako količina muzike koja se izdaje na dnevnoj bazi sve više raste, raste i potreba za efikasnim određivanjem muzičkih žanrova. Cilj automatizacije muzičke klasifikacije je da izbor pesama bude brz i manje težak. Zbog toga klasifikacija muzičkih žanrova predstavlja jedan od važnih zadataka za mnoge aplikacije.
+
+U nastavku rada pokazaćemo kako se klasifikuju muzički žanrovi korišćenjem konvolutivne neuronske mreze.
+
+\subsection{Klasifikacija}
+Zadatak klasifikacije jeste da odredi funkciju (klasifilacioni model) koja preslikava skup ulaznih atributa $X = (x^1, x^2, ..., x^k)$ u jednu od predefinisanih vrednosti $y$, gde je $y$ oznaka klase. 
+
+Cilj formiranja modela je primena na materijal kod kojeg je vrednost atributa $y$ nepoznata, radi što preciznijeg predviđanja vrednosti $y$.
+
+Ulazni podaci se obično dele u dva disjunktna skupa:
+\begin{itemize}
+    \item skup za trening - koristi se za formiranje modela
+    \item skup za testiranje - koristi se za proveru ispravnosti modela
+\end{itemize}
+
+Moguće je uvesti i treći skup, skup za validaciju. On se koristi u toku formiranja modela, kako bi se izbegla preterana prilagođenost modela podacima.
+
+\subsection{Tehnike klasifikacije}
+Osnovne tehnike / metode klasifikacije su:
+\begin{itemize}
+    \item drveta odlučivanja
+    \item neuronske mreze
+    \item statistički zasnovane metode
+    \item određivanje najbližeg suseda
+    \item mašine sa potpornim vektorima
+    \item ...
+\end{itemize}
+
+\subsection{Neuronske mreže}
+Neuronske mreže trenutno predstavljaju metod mašinskog učenja sa najširim spektrom primena. Postoje različite vrste neuronskih mreža, koje su često specijalizovane za konkretne primene. 
+
+Ono sto je zajedničko svim neuronskim mrežama jeste njihova struktura. Svaka neuronska mreža se sastoji od određenog broja elementarnih jedinica - neurona. Veštački neuron (eng. Artificial neuron - AN) predstavlja model biološkog neurona. Po analogiji sa biološkim neuronima, veštački neuroni jedni drugima prosleđuju
+signale i izračunavaju nove signale na osnovu onih koji su im prosleđeni. Struktura povezanosti neurona
+i način na koji oni vrše izračunavanja određuju o kakvoj mreži se
+radi (npr. potpuno povezana neuronska mreza, konvolutivna neuronska mreza, rekurentna neuroska mreza, ...).
+
+
+\subsubsection{Konvolutivne neuroske mreže}
+Konvolutivne neuronske mreže imaju ulazni sloj, izlazni sloj, nekoliko skrivenih slojeva i veliki broj parametara, pomoću kojih mogu da nauče komplikovane obrasce.
+
+Slojevi mogu biti \emph{konvolutivni} ili \emph{slojevi agregacije}. 
+
+Neuronska mreža u svakom sloju uči određeni broj filtera. Skup filtera koji deluju nad istim ulazom nazivamo konvolutivnim slojem.
+
+Slojevi agregacije služe za agregaciju informacija u cilju smanjenja količine izračunavanja i broja parametara u mreži.
+
+\end{document}
