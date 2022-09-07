@@ -65,7 +65,7 @@ U nastavku rada pokazaćemo kako se klasifikuju muzički žanrovi korišćenjem 
 
 \section{Implementacjia}
 
-\subsection{Priprema podataka}
+\subsection{Ulazni podaci}
 U implementaciji projekta je za obučavanje i testiranje modela korišćen skup podataka GTZAN koji sadrži 1000 pesama iz 10 muzičkih žanrova. Skup je podeljen u zasebne foldere po žanrovima: Blues, Classical, Country, Disco, Hip-hop, Jazz, Metal, Pop, Reggae, Rock, tako da se u svakom folderu nalazi po 100 pesama tog žanra, a svaka je dužine 30 sekundi. 
 
 Pored samih audio fajlova, skup sadrži jos jedan folder organizovan na isti način sa vizuelnom reprezentacijom odgovarajućih pesama, kao i dva fajla u formatu .csv sa svojstvima istih pesama.
@@ -80,7 +80,7 @@ Podaci kojima se pohranjuje konvolutivna neuronska mreža su slike kojima su pre
     \item zero crossing rate
 \end{itemize}
 
-U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramom se predstavlja frekvencija signala, odnosno pomoću njega se moze pratiti ''glasnoća'' zvuka tokom vremena.
+U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramom se predstavlja frekvencija signala, odnosno pomoću njega se moze pratiti ''glasnoća'' zvuka tokom vremena. Horizontalna osa spektrograma predstavlja vreme, vertikalna osa frekvenciju, dok treca dimenzija, odnosno boja na grafiku, predstavlja amplitudu.
 
 \begin{figure}[h]
 \centering
@@ -88,15 +88,45 @@ U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramo
 \caption{Primeri spektrograma}
 \end{figure}
 
-Skup podataka koji se koristi u ovom projektu već sadrzi odgovarajući spektrogram za svaku pesmu, potrebno je samo učitati podatke i izvršiti podelu na trening i test skup. Za test skup izdvojeno je 30\% podataka i to ravnomerno iz svake klase.
 
-\subsubsection{Preprocesiranje .csv fajlova}
 
-Fajlovi u formatu .csv sadrže razne odlike zvučnog signala u obliku tabele. Svakim redom u tabeli prikazane su odlike jedne pesme iz skupa. Atributi koji se mogu naći u njima su naziv i dužina pesme, ali i srednja vrednost i varijansa izračunate za različite podatke o zvuku poput frekvencije, harmonije, tempa i sl. Neophodno je ukloniti naziv pesme iz skupa atributa, s obzirom na to da je njegova vrednost jednistvena za svaku instancu.
+\subsubsection{Akustičke karakteristike}
+
+Osim vizuelne reprezentacije, audio snimke je moguce predstaviti i pomoću realnih brojeva. Fajlovi u formatu .csv sadrže razne odlike zvučnog signala u obliku tabele. Svakim redom u tabeli prikazane su odlike jedne pesme iz skupa. Atributi koji se mogu naći u njima su naziv i dužina pesme, ali i razlicite varijante MFCC, hromatske karakteristike (eng. chroma features), harmonija, tempo i sl. 
+
+MFCC (eng. mel frequency cepstral coefficients) predstavlja mali skup karakteristika (obično oko 10 do 20) koje koncizno opisuju ukupan oblik spektralnog omotača, a najčešće se koriste za opisivanje boje zvuka.
+
+Hromatske karakteristike takođe u kondenzovanom obliku predstavljaju tonski sadržaj audio signala, a veoma su značajne za prepoznavanje akorda i procenu harmonijske sličnosti.
+
+\subsubsection{Priprema podataka}
+
+Pre kreiranja modela neophodno je razumeti i pripremiti podatke koji se koriste. Skup podataka koji se korsiti u ovom projektu već sadrzi odgovarajuće fajlove sa akustičkim karakteristikama, kao i generisane spektrograme za svaku pesmu.
+
+Spektrogrami su već pripremljeni, pa je potrebno samo učitati podatke i izvršiti podelu na trening i test skup. Za test skup izdvojeno je 30\% podataka i to ravnomerno iz svake klase.
+
+Fajlove u formatu csv je potrebno dodatno pripremiti kako bi mogli da se koriste za treniranje modela. Za početak, neophodno je ukloniti naziv pesme iz skupa atributa, s obzirom na to da je njegova vrednost jednistvena za svaku instancu.
 
 Sve ostale vrednosti su neki realni brojevi, međutim nemaju iste raspodele. Kako ne želimo da dajemo nekim atributima veći značaj u odnosu na druge, potrebno je izvršiti standardizaciju podataka, tj. svođenje vrednosti svih atributa na standardnu normalnu raspodelu.
 
 Standardizaciju je moguće izvršiti korišćenjem funkcije StandardScaler iz biblioteke sklearn. Pošto test podaci treba da budu nepoznati, kako bismo ispravno mogli da ocenimo kvalitet dobijenog modela, onda njihove vrednosti ne smeju uticati na matematičko očekivanje i standardnu devijaciju koji se koriste za skaliranje. Zbog toga je neophodno prvo izvršiti podelu na trening i test skup, a zatim StandardScaler prilagoditi samo trening podacima. Isti parametri se zatim koriste za transformaciju oba skupa.
+
+\subsection{Kreiranje neuronske mreže}
+
+Centralni deo projekta predstavlja kreiranje i obučavanje neuronskih mreža. Na osnovu podataka treba izabrati koju mrežu je potrebno koristiti. Podatke koji predstavljaju spektrograme možemo posmatrati kao slike, odnosno matrice i koristiti ih za obučavanje konvolutivne mreže, dok podatke o akustičkim karakteristikama možemo videti kao vektore i stoga ih koristiti za treniranje potpuno povezane neuronske mreže.
+
+\subsubsection{Parametri}
+
+Potpuno povezana neuronska mreža se sastoji od 5 slojeva neurona, od kojih prva 4 koriste ''relu'' aktivacionu funkciju, dok poslednji koristi ''softmax''. Funkcija softmax slika ulazni vektor u vektor verovatnoća za svaku klasu. Dakle, za svaku instancu je na izlazu vektor iz kog mozemo pročitati za svaki muzicki žanr, koja je verovatnoća da ta instanca pripada baš tom žanru. Kao rezultat klasifikacije, biramo onaj žanr za koji je ta verovatnoća najveća.
+
+Preprilagodjavanje je veoma česta pojava prilikom obučavanja neuronskih mreza. Ukazuje nam na to da se model ponaša veoma dobro na podacima koji su mu poznati, a znatno lošije na nepoznatim podacima. Za sprečavanje preprilagodjavanja korišćeni su takozvani dropout slojevi između svaka dva potpuno povezana sloja. Model je treniran na 200 epoha.
+
+Struktura konvolutivne neuronske mreže se sastoji iz 3 konvolutivna sloja, a nakon svakog od njih se nalazi agregacioni sloj sa funkcijom maksimuma. Izlaz iz konvolutivnog dela mreže predstavlja ulaz u potpuno povezani deo koji se sastoji od dva sloja. Poslednji sloj takođe ima softmax aktivacionu funkciju.
+
+Između ova dva dela se nalazi sloj za poravnavanje koji omogućava da se izlaz iz konvolutivnog dela, koji je dvodimenzioni, predstavi u obliku jednodimenzionog vektora. Takođe je korišćen jedan dropout sloj radi sprečavanja preprilagodjavanja i model je treniran na 20 epoha.
+
+Za optimizator je u oba slučaja korišćen ''adam'', funkcija greške je kategorička unakrsna entropija i metrika za kvalitet modela je tačnost. 
+
+
 
 
 
