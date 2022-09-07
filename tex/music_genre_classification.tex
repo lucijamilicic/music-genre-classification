@@ -80,14 +80,28 @@ Podaci kojima se pohranjuje konvolutivna neuronska mreža su slike kojima su pre
     \item zero crossing rate
 \end{itemize}
 
-U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramom se predstavlja frekvencija signala, odnosno pomoću njega se moze pratiti ''glasnoća'' zvuka tokom vremena. Horizontalna osa spektrograma predstavlja vreme, vertikalna osa frekvenciju, dok treca dimenzija, odnosno boja na grafiku, predstavlja amplitudu.
+U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramom se predstavlja frekvencija signala, odnosno pomoću njega se moze pratiti ''glasnoća'' zvuka tokom vremena. Horizontalna osa spektrograma predstavlja vreme, vertikalna osa frekvenciju, dok treća dimenzija, odnosno boja na grafiku, predstavlja amplitudu.
+
+
+Posmatranjem spektrograma iz različitih žanrova moguće je uočiti neke pravilnosti. Na sledećim primerima su izdvojene prve tri instance koje pripadaju redom žanrovima klasična muzika, rege i metal. Pored onoga što ljudsko oko može da uoči, neuronska mreža može da nauči i neke detalje koji nisu očigledni.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=0.75]{spectrograms}
-\caption{Primeri spektrograma}
+\includegraphics[scale=0.65]{classical}
+\caption{Klasična muzika}
 \end{figure}
 
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{reggae}
+\caption{Rege}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.65]{metal}
+\caption{Metal}
+\end{figure}
 
 
 \subsubsection{Akustičke karakteristike}
@@ -97,6 +111,7 @@ Osim vizuelne reprezentacije, audio snimke je moguce predstaviti i pomoću realn
 MFCC (eng. mel frequency cepstral coefficients) predstavlja mali skup karakteristika (obično oko 10 do 20) koje koncizno opisuju ukupan oblik spektralnog omotača, a najčešće se koriste za opisivanje boje zvuka.
 
 Hromatske karakteristike takođe u kondenzovanom obliku predstavljaju tonski sadržaj audio signala, a veoma su značajne za prepoznavanje akorda i procenu harmonijske sličnosti.
+
 
 \subsubsection{Priprema podataka}
 
@@ -126,8 +141,28 @@ Između ova dva dela se nalazi sloj za poravnavanje koji omogućava da se izlaz 
 
 Za optimizator je u oba slučaja korišćen ''adam'', funkcija greške je kategorička unakrsna entropija i metrika za kvalitet modela je tačnost. 
 
+\newpage
 
+\section{Rezultati}
 
+Procenu kvaliteta modela vršimo na osnovu test skupa. Ovaj skup sadrži instance koje su modelu nepoznate, tj. koje se nisu koristile za obučavanje. Zbog toga je ovakva ocena reprezentativna.
 
+Dobijeni CNN model pokazuje tačnost oko 65\%, dok je tačnost potpuno povezane mreže oko 75\%. Pored tačnosti je za meru kvaliteta modela korišćena i matrica konfuzije.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=1.2]{matrix}
+\caption{Matrica konfuzije CNN modela}
+\end{figure}
+
+Matrica konfuzije je takva da njen element $a_{ij}$ predstavlja broj instanci klase $i$ koje je dati model klasifikovao kao klasu $j$. Dakle, na dijagonali ove matrice se nalaze brojevi ispravno klasifikovanih instanci.
+
+Detaljnijom analizom dobijene matrice konfuzije možemo da uočimo da model prilično dobro pravi razlike između razlicitih žanrova. Najčešće greške modela su pojedinačne pesme koje je klasifikovao kao instance nekog drugog žanra, odnosno, ne postoji učestalo mešanje bilo koje dve klase.
+
+\section{Zaključak}
+
+U ovom radu su predstavljena dva različita pristupa za rešavanje problema klasifikacije žanrova muzike. Prvi uključuje generisanje spektrograma na osnovu audio zapisa, koji se dalje tretira kao slika. Ovaj pristup koristi konvolutivnu neuronsku mrežu. Drugi pristup podrazumeva ekstrahovanje nekih značajnih akustičkih karakteristika, praćeno obučavanjem potpuno povezane neuronske mreže.
+
+Važno je napomenuti da je korišćeni skup podataka relativno mali i da ne može u potpunosti da prikaže benefite ovih pristupa.
 
 \end{document}
