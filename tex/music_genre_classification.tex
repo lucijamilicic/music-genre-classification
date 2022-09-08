@@ -63,6 +63,8 @@ Slojevi agregacije služe za agregaciju informacija u cilju smanjenja količine 
 
 U nastavku rada pokazaćemo kako se klasifikuju muzički žanrovi korišćenjem konvolutivne neuronske mreže.
 
+\newpage 
+
 \section{Implementacjia}
 
 \subsection{Ulazni podaci}
@@ -85,18 +87,18 @@ U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramo
 
 Posmatranjem spektrograma iz različitih žanrova moguće je uočiti neke pravilnosti. Na sledećim primerima su izdvojene prve tri instance koje pripadaju redom žanrovima klasična muzika, rege i metal. Pored onoga što ljudsko oko može da uoči, neuronska mreža može da nauči i neke detalje koji nisu očigledni.
 
-\begin{figure}[h]
+\newpage
+
+\begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{classical}
 \caption{Klasična muzika}
 \end{figure}
-
-\begin{figure}[h]
+\begin{figure}[t]
 \centering
 \includegraphics[scale=0.65]{reggae}
 \caption{Rege}
 \end{figure}
-
 \begin{figure}[h]
 \centering
 \includegraphics[scale=0.65]{metal}
@@ -147,17 +149,57 @@ Za optimizator je u oba slučaja korišćen ''adam'', funkcija greške je katego
 
 Procenu kvaliteta modela vršimo na osnovu test skupa. Ovaj skup sadrži instance koje su modelu nepoznate, tj. koje se nisu koristile za obučavanje. Zbog toga je ovakva ocena reprezentativna.
 
-Dobijeni CNN model pokazuje tačnost oko 65\%, dok je tačnost potpuno povezane mreže oko 75\%. Pored tačnosti je za meru kvaliteta modela korišćena i matrica konfuzije.
+Dobijeni CNN model pokazuje tačnost oko 65\%, dok je tačnost potpuno povezane mreže oko 75\%. Mere tačnosti i greške se računaju tokom svake epohe obučavanja modela i mogu se pratiti na grafiku.
 
 \begin{figure}[h]
 \centering
-\includegraphics[scale=1.2]{matrix}
-\caption{Matrica konfuzije CNN modela}
+\includegraphics[scale=0.7]{history}
+\caption{Mere greške i tačnosti kroz epohe - potpuno povezana mreža}
 \end{figure}
 
-Matrica konfuzije je takva da njen element $a_{ij}$ predstavlja broj instanci klase $i$ koje je dati model klasifikovao kao klasu $j$. Dakle, na dijagonali ove matrice se nalaze brojevi ispravno klasifikovanih instanci.
 
-Detaljnijom analizom dobijene matrice konfuzije možemo da uočimo da model prilično dobro pravi razlike između razlicitih žanrova. Najčešće greške modela su pojedinačne pesme koje je klasifikovao kao instance nekog drugog žanra, odnosno, ne postoji učestalo mešanje bilo koje dve klase.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{CNN-history}
+\caption{Mere greške i tačnosti kroz epohe - konvolutivna mreža}
+\end{figure}
+
+
+Pored tačnosti je za meru kvaliteta modela korišćena i matrica konfuzije. Matrica konfuzije je takva da njen element $a_{ij}$ predstavlja broj instanci klase $i$ koje je dati model klasifikovao kao klasu $j$. Dakle, na dijagonali ove matrice se nalaze brojevi ispravno klasifikovanih instanci.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{matrix}
+\caption{Matrice konfuzije dobijenih modela}
+\end{figure}
+
+Detaljnijom analizom dobijene matrice konfuzije možemo da uočimo da model prilično dobro pravi razlike između razlicitih žanrova. Najčešće greške modela su pojedinačne pesme koje je klasifikovao kao instance nekog drugog žanra, odnosno, ne postoji učestalo mešanje neke dve klase. Takođe možemo da primetimo da pojedine klase model prepoznaje skoro potpuno ispravno, npr. klasičnu i metal muziku (2. i 7. vrsta).
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{misclassified}
+\caption{Primerak pogrešno klasifikovane instance}
+\end{figure}
+
+Dobijeni rezultati ne odstupaju znatno od rezultata drugih eksperimenata ovog tipa. CNN model zasnovan na spektrogramima u različitoj literaturi pokazuje tačnost oko 65\% na test skupu podataka. 
+
+Prema dobijenim rezultatima, klasifikacija na osnovu izdvojenih akustičkih karakteristika se pokazala kao bolja tehnika od metode zasnovane na spektrogramima, iako su različiti eksperimenti pokazali da je CNN jedna od najboljih metoda za rešavanje ovog problema.
+
+Različiti naučni radovi predlažu razne tehnike kojima je moguće povećati kvalitet ove metode. Neki od predloga su korišćenje rekurentne neuronske mreže ili ansambla metoda. Međutim, jedan od načina koji obezbeđuje poboljšanje modela jeste dodatno preprocesiranje podataka. Naime, korišćeni skup podataka nije dovoljno veliki (1000 instanci), pa je jedno od rešenja proširiti ovaj skup. Dodatno preprocesiranje se svodi na isecanje svake pesme (u trajanju od 30 sekundi), na više manjih delova koji se delimično preklapaju. Ova metoda obezbeđuje veći skup za treniranje sa istim podacima kao početni. Takođe se u literaturi mogu sresti različiti načini za preprocesiranje samih audio zapisa, uklanjanje šuma, skaliranje različitih karakteristika zvuka i slično.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{acc}
+\caption{Tačnost CNN modela zasnovanog na spektrogramima}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.8]{cnn-compared}
+\caption{Poređenje CNN modela sa drugim klasifikatorima na skupu GTZAN}
+\end{figure}
+
+\newpage
 
 \section{Zaključak}
 
