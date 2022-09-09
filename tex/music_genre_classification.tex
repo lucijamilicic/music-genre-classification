@@ -82,8 +82,9 @@ Podaci kojima se pohranjuje konvolutivna neuronska mreža su slike kojima su pre
     \item zero crossing rate
 \end{itemize}
 
-U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogramom se predstavlja frekvencija signala, odnosno pomoću njega se moze pratiti ''glasnoća'' zvuka tokom vremena. Horizontalna osa spektrograma predstavlja vreme, vertikalna osa frekvenciju, dok treća dimenzija, odnosno boja na grafiku, predstavlja amplitudu.
+U ovom projektu je za vizuelni prikaz zvuka korišćen spektrogram. Spektrogram je vizualna reprezentacija spektra frekvencija zvuka ili drugih signala kako variraju kroz vreme. Najčešće se koriste u domenu muzike, seizmologije, procesiranja govora i drugim. 
 
+Spektrogram se može konstruisati korišćenjem Furijeove transformacije, tako što se zvučni signal podeli na manje segmente i za svaki od njih izračuna Furijeova transformacija. Ovaj postupak se naziva Kratkoročna Furijeova transformacija (eng. Short-time Fourier transform, STFT). Na x-osi je vreme, na y-osi frekvencija, a svaka kolona spektrograma prikazuje spektar kratkog segmenta koji korišćenjem boja ili crno-bele skale (eng. grayscale) predstavlja amplitudu.
 
 Posmatranjem spektrograma iz različitih žanrova moguće je uočiti neke pravilnosti. Na sledećim primerima su izdvojene prve tri instance koje pripadaju redom žanrovima klasična muzika, rege i metal. Pored onoga što ljudsko oko može da uoči, neuronska mreža može da nauči i neke detalje koji nisu očigledni.
 
@@ -133,9 +134,9 @@ Centralni deo projekta predstavlja kreiranje i obučavanje neuronskih mreža. Na
 
 \subsubsection{Parametri}
 
-Potpuno povezana neuronska mreža se sastoji od 5 slojeva neurona, od kojih prva 4 koriste ''relu'' aktivacionu funkciju, dok poslednji koristi ''softmax''. Funkcija softmax slika ulazni vektor u vektor verovatnoća za svaku klasu. Dakle, za svaku instancu je na izlazu vektor iz kog mozemo pročitati za svaki muzicki žanr, koja je verovatnoća da ta instanca pripada baš tom žanru. Kao rezultat klasifikacije, biramo onaj žanr za koji je ta verovatnoća najveća.
+Potpuno povezana neuronska mreža se sastoji od 4 sloja neurona, od kojih prva 3 koriste ''relu'' aktivacionu funkciju, dok poslednji koristi ''softmax''. Funkcija softmax slika ulazni vektor u vektor verovatnoća za svaku klasu. Dakle, za svaku instancu je na izlazu vektor iz kog mozemo pročitati za svaki muzicki žanr, koja je verovatnoća da ta instanca pripada baš tom žanru. Kao rezultat klasifikacije, biramo onaj žanr za koji je ta verovatnoća najveća.
 
-Preprilagodjavanje je veoma česta pojava prilikom obučavanja neuronskih mreza. Ukazuje nam na to da se model ponaša veoma dobro na podacima koji su mu poznati, a znatno lošije na nepoznatim podacima. Za sprečavanje preprilagodjavanja korišćeni su takozvani dropout slojevi između svaka dva potpuno povezana sloja. Model je treniran na 200 epoha.
+Preprilagodjavanje je veoma česta pojava prilikom obučavanja neuronskih mreza. Ukazuje nam na to da se model ponaša veoma dobro na podacima koji su mu poznati, a znatno lošije na nepoznatim podacima. Za sprečavanje preprilagodjavanja korišćeni su takozvani dropout slojevi između svaka dva potpuno povezana sloja. Model je treniran na 100 epoha.
 
 Struktura konvolutivne neuronske mreže se sastoji iz 3 konvolutivna sloja, a nakon svakog od njih se nalazi agregacioni sloj sa funkcijom maksimuma. Izlaz iz konvolutivnog dela mreže predstavlja ulaz u potpuno povezani deo koji se sastoji od dva sloja. Poslednji sloj takođe ima softmax aktivacionu funkciju.
 
@@ -233,6 +234,8 @@ South China University of Technology, GuangZhou, China, 2016.
 	\bibitem{MGC}
 	Derek A. Huang, Arianna A. Serafini, and Eli J. Pugh. \textit{Music Genre Classification}, 2018.
 
+	\bibitem{DSPP}
+	Allen B. Downey. \textit{Digital Signal Processing in Python}, 2014.
 	
 
 	
